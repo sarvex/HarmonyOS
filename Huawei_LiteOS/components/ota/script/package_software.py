@@ -41,10 +41,7 @@ DEFAULT_CONFIG_FILE_NAME = 'config.xml'
 DEFAULT_KEY_FILE_NAME = 'private_key.pem'
 
 def min(a, b):
-	if a <= b:
-		return a
-	else:
-		return b	
+	return a if a <= b else b	
 
 def append_buffer(buffer, pos, value):
 	buffer.append(value)
@@ -79,8 +76,8 @@ class file_writer(object):
 	def write(self, value, byte_num = 4, offset = INVALID_OFFSET):
 		if offset != INVALID_OFFSET:
 			self.fd.seek(offset)	
-			
-		if isinstance(value, int) or isinstance(value, long):
+
+		if isinstance(value, (int, long)):
 			buffer = bytearray()
 			serialize_byte(buffer, value, byte_num)
 		elif isinstance(value, str):
@@ -248,7 +245,7 @@ class tlv_type(object):
 		
 	def write(self, tlv):
 		[l, v] = self.get_value(tlv.firstChild.data, tlv)
-		if 0 == l:
+		if l == 0:
 			return [OK, 0]
 		if l < 0:
 			return [RET_XML_CONFIG_ERR, 0]
